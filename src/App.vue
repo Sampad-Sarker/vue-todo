@@ -79,12 +79,7 @@
 <script>
 export default{
   name:'App',
-  // mounted() {
-  //   this.todos = JSON.parse(localStorage.getItem("todos"))
-  // },
-  // updated() {
-  //   localStorage.setItem("todos",JSON.stringify(this.todos))
-  // },
+  
   data() {
     return {
       taskName:'',
@@ -96,6 +91,15 @@ export default{
       activated:"clear-button-activated",
       deactivated:"clear-button-deactivated",
     }
+  },
+
+  mounted() {
+    [this.todos] = [JSON.parse(localStorage.getItem("todos"))];
+    //console.log("mounted--",JSON.parse(localStorage.getItem("todos")));
+    
+  },
+  updated() {
+    localStorage.setItem("todos",JSON.stringify(this.todos));
   },
 
   methods: {
