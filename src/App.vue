@@ -94,7 +94,7 @@ export default{
   },
 
   mounted() {
-    [this.todos] = [JSON.parse(localStorage.getItem("todos"))];
+    //[this.todos] = [JSON.parse(localStorage.getItem("todos"))];
     //console.log("mounted--",JSON.parse(localStorage.getItem("todos")));
     
   },
