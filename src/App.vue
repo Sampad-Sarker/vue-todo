@@ -89,7 +89,7 @@ export default{
     return {
       taskName:'',
       todos:[
-        {id:1,title:'Javascript Learning',time:new Date().toLocaleString("en-US",{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',hour12: false}),done:true},
+        {id:1,title:'Javascript Learning',time:new Date().toLocaleString("en-US",{hour12: true}),done:true},
         {id:2,title:'DOM Learning',time:new Date().toLocaleString("en-US",{ hour12: true }),done:false},
         {id:3,title:'Vue.js Learning',time:new Date().toLocaleString("en-US",{ hour12: true }),done:true}
       ],
@@ -140,7 +140,7 @@ export default{
         //id:this.todos[(this.todos.length)-1].id+1,
         id:Math.floor((Math.random()*1000000+1)),
         title:this.taskName,
-        time:new Date().toLocaleString("en-US",{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',hour12: false}),
+        time:new Date().toLocaleString("en-US",{hour12: true}),
         done:false
       })
 
