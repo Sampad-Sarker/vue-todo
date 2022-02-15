@@ -13,7 +13,7 @@
       
       class="composer__input" 
       @keypress.enter = "addTask"
-      @keydown="edit"
+      @keyup="edit"
       v-model="taskName"
       
     />
@@ -32,7 +32,7 @@
 
   <div class="todos">
     <!-- Todo start -->
-    <div class="todo" 
+    <div class="todo" v-if="isTaskShow"
       v-for="(todo,index) in todos" 
       :key="todo.id" 
       :class="{'todo--done':todo.done}"
@@ -52,27 +52,11 @@
       </div>
       
     </div>
-    <!-- Todo end -->
 
-    <!-- Todo start -->
-    <!-- <div class="todo">
-      <div class="todo__status-dot"></div>
-      <div>
-        <p class="todo__content">sdfsa</p>
-        <small class="todo__time"> Wed Feb 09 2022 21:19:25 GMT+0600 (Bangladesh Standard Time) </small>
-      </div>
-    </div> -->
     <!-- Todo end -->
-
-    <!-- Todo start -->
-    <!-- <div class="todo todo--done">
-      <div class="todo__status-dot"></div>
-      <div>
-        <p class="todo__content">sdfsa</p>
-        <small class="todo__time"> Wed Feb 09 2022 21:19:25 GMT+0600 (Bangladesh Standard Time) </small>
-      </div>
-    </div> -->
-    <!-- Todo end -->
+    <div v-if="isTaskShow">
+      <p>Task not available</p>
+    </div>
   </div>
 </div>
 
@@ -105,30 +89,22 @@ export default{
   updated() {
     //localStorage.setItem("todos",JSON.stringify(this.todos));
   },
-  watch:{
-    
-    // taskName(){
-
-    // },
-
-    // taskEdit(todo){
-    //   //todo
-    //   this.taskName = todo.title +  '';
-    //   console.log('taskEdit',todo);
-
-      
-    // },
-  },
-
+ 
   methods: {
-    edit(){
+    isTaskShow(){
+        if(this.todos.length>0)
+        {return true}
+        else
+        {return false}
+    },
+    edit(e){
       console.log('edit....',this.taskName);
-
+      let editedTaskName  = e.target.value
 
       if(this.isEdit){
         console.log("eeeeeeeeeeeeeeeeeeeeeeeeeee");
 
-        this.todos.filter((el)=> { if(el.edit){el.title = this.taskName}
+        this.todos.filter((el)=> { if(el.edit){el.title = this.taskName;el.title=editedTaskName}
                                   })
       }
 
@@ -144,20 +120,8 @@ export default{
       this.taskName = todo.title
       //this.taskName = todo.id++
       
-      //this.taskName = todo.title+newName ;
-      //this.taskName=''
-      //this.taskName = todo.title+"     wwwwww" ;
-      //todo.title=''
-      //todo.title = this.taskName
-      // console.log(todo.title);
       
-      
-      //this.todos[index].title = "WWWWW"
-      //console.log(this.todos[index].title);
-      
-      // this.todos[index].splice(1,0,)
-      //todo.title = this.taskName
-      console.log('taskEdit:',todo,'isEdit:',this.isEdit)
+      //console.log('taskEdit:',todo,'isEdit:',this.isEdit)
       
     },
 
@@ -194,13 +158,8 @@ export default{
 
     addTask(){
 
-      // if(This.isEdit){
-      //   console.log('edit true');
-      //   //this.taskEdit()
-
-      //   //return
-      // }
-      // else{
+      
+      if(isEdit){
         this.todos.push({
           
           //id:this.todos[(this.todos.length)-1].id+1,
@@ -210,9 +169,9 @@ export default{
           done:false,
           isEdit:false
         })
-
+      }
         this.taskName = ""
-      // }
+      
     },
 
     changeDoneStatus(todo){
