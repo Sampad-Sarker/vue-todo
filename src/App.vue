@@ -22,7 +22,7 @@
       <Composer v-model="taskName" @addTask="addTaskHandler"></Composer>
 
       <div class="filter">
-        <div class="filter__left">
+        <!-- <div class="filter__left">
           <button
             class="filter__button filter__button--active"
             @click="filteredTasks = 'all'"
@@ -35,7 +35,8 @@
         </div>
         <div>
           <button class="filter__button filter__button--danger" @click="clearDoneTask" v-if="todos.filter(e=>e.done).length">Clear</button>
-        </div>
+        </div> -->
+        <Filter :todos="todos" @allTasks="filteredTasks = 'all'" @pendingTasks="filteredTasks = 'pending'" @doneTasks="filteredTasks = 'done'" @clearDoneTask="clearDoneTask"></Filter>
       </div>
     </div>
 
@@ -72,9 +73,10 @@
 <script>
 import Composer from './components/Composer.vue';
 import Todo from './components/Todo.vue';
+import Filter from './components/Filter.vue'
 export default {
   name: 'App',
-  components: { Todo, Composer },
+  components: { Todo, Composer,Filter},
   data() {
     return {
       taskName: '',
