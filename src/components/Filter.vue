@@ -8,11 +8,11 @@
         <button
             class="filter__button"
             @click="$emit('pendingTasks')"
-            
+            v-if="pendingTask"
         >Pending ({{ pendingTask }})</button>
         <button class="filter__button" 
             @click="$emit('doneTasks')"
-            
+            v-if="doneTask"
         >Done ({{ doneTask }})</button>
     </div>
     <div>
@@ -20,7 +20,7 @@
             class="filter__button filter__button--danger"
             @click="$emit('clearDoneTask')"
             
-            v-if="todos.filter(e => e.done).length"
+            v-if="doneTask"
         >Clear</button>
     </div>
 </template>
