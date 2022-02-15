@@ -1,251 +1,285 @@
 <template>
-  
   <div class="app-container">
-  
-  <h1 class="app-title">
-    <img src="./assets/todo.jpg" alt="" >
-    Todos
-  </h1>
+    <h1 class="app-title">
+      <img src="./assets/todo.jpg" alt />
+      Todos
+    </h1>
 
-  <div class="composer">
-    <input type="text" 
-      placeholder="Type and hit enter..." 
-      
-      class="composer__input" 
-      @keypress.enter = "addTask"
-      @keydown="edit"
-      v-model="taskName"
-      
-    />
-    
-    <div class="filter">
-      <div class="filter__left">
-        <button class="filter__button filter__button--active">All ({{todos.length}})</button>
-        <button class="filter__button">Pending ({{pendingTask}})</button>
-        <button class="filter__button">Done ({{doneTask}})</button>
+    <div class="composer">
+      <!-- <form @submit.prevent="addTask">
+
+        <input
+          type="text"
+          placeholder="Type and hit enter..."
+          class="composer__input"
+          @keyup="edit"
+          v-model="taskName"
+        />
+      </form>-->
+
+      <!-- <Composer @inputValue="inputValueHandler" @addTask="addTaskHandler"></Composer> -->
+
+      <Composer v-model="taskName" @addTask="addTaskHandler"></Composer>
+
+      <div class="filter">
+        <div class="filter__left">
+          <button
+            class="filter__button filter__button--active"
+            @click="filteredTasks = 'all'"
+          >All ({{ todos.length }})</button>
+          <button
+            class="filter__button"
+            @click="filteredTasks = 'pending'"
+          >Pending ({{ pendingTask }})</button>
+          <button class="filter__button" @click="filteredTasks = 'done'">Done ({{ doneTask }})</button>
+        </div>
+        <div>
+          <button class="filter__button filter__button--danger" @click="clearDoneTask" v-if="todos.filter(e=>e.done).length">Clear</button>
+        </div>
       </div>
-      <div >
-        <button class="filter__button filter__button--danger" @click="clearDoneTask">Clear</button>
+    </div>
+
+    <div class="todos">
+      <!-- Todo start -->
+
+      <Todo v-for="todo in filteredTodos" :key="todo.id" :todo="todo" @onToggle="changeDoneStatus"></Todo>
+      <!-- <div
+        class="todo"
+        v-if="isTaskShow"
+        v-for="todo in todos"
+        :key="todo.id"
+        :class="{ 'todo--done': todo.done }"
+      >
+        <div class="todo__status-dot"></div>
+        <div @click="changeDoneStatus(todo)">
+          <p class="todo__content">{{ todo.title }}</p>
+          <small class="todo__time text-xs">{{ todo.time }}</small>
+        </div>
+
+        <div class="todo__edit">
+          <button @click.prevent="taskEdit(todo)">📝</button>
+        </div>
+      </div>-->
+
+      <!-- Todo end -->
+      <div v-if="!filteredTodos.length">
+        <p>Task not available</p>
       </div>
     </div>
   </div>
-
-  <div class="todos">
-    <!-- Todo start -->
-    <div class="todo" 
-      v-for="(todo,index) in todos" 
-      :key="todo.id" 
-      :class="{'todo--done':todo.done}"
-      
-      
-    >
-      <div class="todo__status-dot" ></div>
-      <div @click="changeDoneStatus(todo)">
-        
-        <p class="todo__content" >{{todo.title}}</p>
-        <small class="todo__time text-xs">{{todo.time}}</small>
-      </div>
-      
-      <div class="todo__edit">
-        <button @click="taskEdit(todo,index)" 
-            >📝</button>
-      </div>
-      
-    </div>
-    <!-- Todo end -->
-
-    <!-- Todo start -->
-    <!-- <div class="todo">
-      <div class="todo__status-dot"></div>
-      <div>
-        <p class="todo__content">sdfsa</p>
-        <small class="todo__time"> Wed Feb 09 2022 21:19:25 GMT+0600 (Bangladesh Standard Time) </small>
-      </div>
-    </div> -->
-    <!-- Todo end -->
-
-    <!-- Todo start -->
-    <!-- <div class="todo todo--done">
-      <div class="todo__status-dot"></div>
-      <div>
-        <p class="todo__content">sdfsa</p>
-        <small class="todo__time"> Wed Feb 09 2022 21:19:25 GMT+0600 (Bangladesh Standard Time) </small>
-      </div>
-    </div> -->
-    <!-- Todo end -->
-  </div>
-</div>
-
-  
 </template>
 
 <script>
-export default{
-  name:'App',
-  
+import Composer from './components/Composer.vue';
+import Todo from './components/Todo.vue';
+export default {
+  name: 'App',
+  components: { Todo, Composer },
   data() {
     return {
-      taskName:'',
-      todos:[
-        {id:1,title:'Javascript Learning',time:new Date().toLocaleString("en-US",{hour12: true}),done:true,edit:false},
-        {id:2,title:'DOM Learning',time:new Date().toLocaleString("en-US",{ hour12: true }),done:false,edit:false},
-        {id:3,title:'Vue.js Learning',time:new Date().toLocaleString("en-US",{ hour12: true }),done:true,edit:false}
+      taskName: '',
+      todos: [
+        { id: 1, title: 'Javascript Learning', time: new Date().toLocaleString("en-US", { hour12: true }), done: true, edit: false },
+        { id: 2, title: 'DOM Learning', time: new Date().toLocaleString("en-US", { hour12: true }), done: false, edit: false },
+        { id: 3, title: 'Vue.js Learning', time: new Date().toLocaleString("en-US", { hour12: true }), done: true, edit: false }
       ],
-      isEdit:false,
-      activated:"clear-button-activated",
-      deactivated:"clear-button-deactivated",
+
+      filteredTasks: 'all',
+      isEdit: false,
+      isNewTask: true,
+      activated: "clear-button-activated",
+      deactivated: "clear-button-deactivated",
     }
   },
 
   mounted() {
     //[this.todos] = [JSON.parse(localStorage.getItem("todos"))];
     //console.log("mounted--",JSON.parse(localStorage.getItem("todos")));
-    
+
   },
   updated() {
     //localStorage.setItem("todos",JSON.stringify(this.todos));
   },
-  watch:{
-    
-    // taskName(){
 
-    // },
+  watch: {
+    taskName(newValue, oldValue) {
+      if (this.isEdit) {
+        console.log("newValue", newValue, "oldValue", oldValue);
 
-    // taskEdit(todo){
-    //   //todo
-    //   this.taskName = todo.title +  '';
-    //   console.log('taskEdit',todo);
+        // this.todos.filter((el) => {
+        //   if (el.edit) { el.edit==false; return el.title = newValue ;}
+        // })
 
-      
-    // },
+        this.todos.filter(el => el.edit).title = newValue
+
+      }
+    }
   },
 
   methods: {
-    edit(){
-      console.log('edit....',this.taskName);
-
-
-      if(this.isEdit){
-        console.log("eeeeeeeeeeeeeeeeeeeeeeeeeee");
-
-        this.todos.filter((el)=> { if(el.edit){el.title = this.taskName}
-                                  })
-      }
-
-     
-      
-      
+    inputValueHandler(inputValueForm) {
+      this.taskName = inputValueForm
     },
 
-    taskEdit(todo,index){
-      this.isEdit = true
-      console.log(todo);
+    isTaskShow() {
+      if (this.todos.length > 0) { return true }
+      else { return false }
+    },
+
+    // edit(e) {
+    //   console.log('edit....', e.target.value);
+    //   let editedTaskName = e.target.value
+
+    //   if (this.isEdit) {
+    //     console.log("eeeeeeeeeeeeeeeeeeeeeeeeeee");
+
+    //     this.todos.filter((el) => {
+    //       if (el.edit) { el.title = editedTaskName }
+    //     })
+
+    //   }
+
+    // },
+
+    taskEdit(todo, event) {
+      this.isEdit = true;
+      this.isNewTask = false
       todo.edit = true
       this.taskName = todo.title
-      //this.taskName = todo.id++
-      
-      //this.taskName = todo.title+newName ;
-      //this.taskName=''
-      //this.taskName = todo.title+"     wwwwww" ;
-      //todo.title=''
-      //todo.title = this.taskName
-      // console.log(todo.title);
-      
-      
-      //this.todos[index].title = "WWWWW"
-      //console.log(this.todos[index].title);
-      
-      // this.todos[index].splice(1,0,)
-      //todo.title = this.taskName
-      console.log('taskEdit:',todo,'isEdit:',this.isEdit)
-      
+
+
+
+
+      // let editedTaskName = event.target.value
+
+      // todo.title = editedTaskName
+      // todo.edit = false
+
+
+      // console.log('taskEdit:==>',todo,)
+
     },
 
-    clearDoneTask(){
+    clearDoneTask() {
       console.log("clear clicked...........");
       //let doneTask = this.todos.filter(el=>{return el.done})
       //console.log(doneTask);
-      
-      
+
+
       //console.log("clear clicked",this.doneTask);
       // this.todos.filter(el => {return el.done}).splice(1,1)
-      
-      
-      
-      
+
+
+
+
       for (let i = 0; i < this.todos.length; i++) {
 
-        if(this.todos[i].done){
+        if (this.todos[i].done) {
 
           console.log(this.todos[i]);
 
           let indexOfDoneTask = this.todos.indexOf(this.todos[i])
-          this.todos.splice(indexOfDoneTask,1)
-          
-          
-        } 
-        
-        
+          this.todos.splice(indexOfDoneTask, 1)
+
+
+        }
+
+
       }
-      
+
     },
 
 
 
-    addTask(){
+    addTaskHandler(e) {
 
-      // if(This.isEdit){
-      //   console.log('edit true');
-      //   //this.taskEdit()
-
-      //   //return
+      // if (e == '') {
+      //   alert("what's your Task Name?")
+      //   return
       // }
-      // else{
-        this.todos.push({
-          
-          //id:this.todos[(this.todos.length)-1].id+1,
-          id:Math.floor((Math.random()*1000000+1)),
-          title:this.taskName,
-          time:new Date().toLocaleString("en-US",{hour12: true}),
-          done:false,
-          isEdit:false
-        })
+      const todoName = {
 
-        this.taskName = ""
+        //id:this.todos[(this.todos.length)-1].id+1,
+        id: Math.floor((Math.random() * 1000000 + 1)),
+        title: this.taskName,
+        time: new Date().toLocaleString("en-US", { hour12: true }),
+        done: false,
+        isEdit: false
+      }
+
+      this.todos.unshift(todoName)
+
+      this.taskName = ''
+
+      // if (this.isEdit) {
+
+      //   this.isEdit = false
+      //   this.isNewTask = false
+      //   this.taskName = ''
+
+      //   console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.....");
+
+
       // }
+
+      // if (e.target.value == '') {
+      //   alert("what's your Task Name?")
+
+      // }
+
+      // if (this.isNewTask && !this.isEdit) {
+      //   this.todos.push({
+
+      //     //id:this.todos[(this.todos.length)-1].id+1,
+      //     id: Math.floor((Math.random() * 1000000 + 1)),
+      //     title: this.taskName,
+      //     time: new Date().toLocaleString("en-US", { hour12: true }),
+      //     done: false,
+      //     isEdit: false
+      //   })
+      // }
+      // this.taskName = ""
+
     },
 
-    changeDoneStatus(todo){
+    changeDoneStatus(todo) {
       todo.done = !todo.done
     },
 
-    
-    
+
+
   },
-  computed:{
-    pendingTask(){
-      let pendingTask = this.todos.filter(el=>{return !el.done})
-      console.log("pending",pendingTask);
-      
+  computed: {
+
+    filteredTodos() {
+      if (this.filteredTasks == 'all') return this.todos
+      else if (this.filteredTasks == 'done') return this.todos.filter(el => el.done)
+      else if (this.filteredTasks == 'pending') return this.todos.filter(el => !el.done)
+    },
+
+    pendingTask() {
+      let pendingTask = this.todos.filter(el => { return !el.done })
+      console.log("pending", pendingTask);
+
       return pendingTask.length
     },
 
-    doneTask(){
-      let doneTask = this.todos.filter(el=>{return el.done})
-      console.log("doneTask",doneTask.length);
-      
+    doneTask() {
+      let doneTask = this.todos.filter(el => { return el.done })
+      console.log("doneTask", doneTask.length);
 
-      return doneTask.length      
+
+      return doneTask.length
     },
 
     // clearDoneTask(){
     //   console.log("clear clicked");
-      
+
     // }
 
     // clearDoneTask(){
     //   // let doneTask = this.todos.filter(el=>{return el.done})
-     
+
 
     //   console.log("clear");
 
@@ -254,13 +288,13 @@ export default{
     //   //     delete this.todos[i]
     //   //   } 
     //   // }
-      
+
     // }
-  
-  
+
+
   }
 }
-  
+
 </script>
 
 
