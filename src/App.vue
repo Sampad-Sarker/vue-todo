@@ -10,9 +10,10 @@
   <div class="composer">
     <input type="text" 
       placeholder="Type and hit enter..." 
-      maxlength="20"
+      
       class="composer__input" 
       @keypress.enter = "addTask"
+      @keydown="edit"
       v-model="taskName"
       
     />
@@ -32,21 +33,23 @@
   <div class="todos">
     <!-- Todo start -->
     <div class="todo" 
-      v-for="todo in todos" 
+      v-for="(todo,index) in todos" 
       :key="todo.id" 
       :class="{'todo--done':todo.done}"
       
-      @click="changeDoneStatus(todo)"
+      
     >
       <div class="todo__status-dot" ></div>
-      <div>
-        <p class="todo__content">{{todo.title}}</p>
-        <small class="todo__time">{{todo.time}}</small>
+      <div @click="changeDoneStatus(todo)">
+        
+        <p class="todo__content" >{{todo.title}}</p>
+        <small class="todo__time text-xs">{{todo.time}}</small>
       </div>
       
-      <!-- <div class="todo__edit">
-        <p @click="taskEdit">📝</p>
-      </div> -->
+      <div class="todo__edit">
+        <button @click="taskEdit(todo,index)" 
+            >📝</button>
+      </div>
       
     </div>
     <!-- Todo end -->
@@ -84,10 +87,11 @@ export default{
     return {
       taskName:'',
       todos:[
-        {id:1,title:'Javascript Learning',time:new Date().toLocaleString("en-US",{hour12: true}),done:true},
-        {id:2,title:'DOM Learning',time:new Date().toLocaleString("en-US",{ hour12: true }),done:false},
-        {id:3,title:'Vue.js Learning',time:new Date().toLocaleString("en-US",{ hour12: true }),done:true}
+        {id:1,title:'Javascript Learning',time:new Date().toLocaleString("en-US",{hour12: true}),done:true,edit:false},
+        {id:2,title:'DOM Learning',time:new Date().toLocaleString("en-US",{ hour12: true }),done:false,edit:false},
+        {id:3,title:'Vue.js Learning',time:new Date().toLocaleString("en-US",{ hour12: true }),done:true,edit:false}
       ],
+      isEdit:false,
       activated:"clear-button-activated",
       deactivated:"clear-button-deactivated",
     }
@@ -99,13 +103,63 @@ export default{
     
   },
   updated() {
-    localStorage.setItem("todos",JSON.stringify(this.todos));
+    //localStorage.setItem("todos",JSON.stringify(this.todos));
+  },
+  watch:{
+    
+    // taskName(){
+
+    // },
+
+    // taskEdit(todo){
+    //   //todo
+    //   this.taskName = todo.title +  '';
+    //   console.log('taskEdit',todo);
+
+      
+    // },
   },
 
   methods: {
-    // taskEdit(){
+    edit(){
+      console.log('edit....',this.taskName);
 
-    // },
+
+      if(this.isEdit){
+        console.log("eeeeeeeeeeeeeeeeeeeeeeeeeee");
+
+        this.todos.filter((el)=> { if(el.edit){el.title = this.taskName}
+                                  })
+      }
+
+     
+      
+      
+    },
+
+    taskEdit(todo,index){
+      this.isEdit = true
+      console.log(todo);
+      todo.edit = true
+      this.taskName = todo.title
+      //this.taskName = todo.id++
+      
+      //this.taskName = todo.title+newName ;
+      //this.taskName=''
+      //this.taskName = todo.title+"     wwwwww" ;
+      //todo.title=''
+      //todo.title = this.taskName
+      // console.log(todo.title);
+      
+      
+      //this.todos[index].title = "WWWWW"
+      //console.log(this.todos[index].title);
+      
+      // this.todos[index].splice(1,0,)
+      //todo.title = this.taskName
+      console.log('taskEdit:',todo,'isEdit:',this.isEdit)
+      
+    },
 
     clearDoneTask(){
       console.log("clear clicked...........");
@@ -139,16 +193,26 @@ export default{
 
 
     addTask(){
-      this.todos.push({
-        
-        //id:this.todos[(this.todos.length)-1].id+1,
-        id:Math.floor((Math.random()*1000000+1)),
-        title:this.taskName,
-        time:new Date().toLocaleString("en-US",{hour12: true}),
-        done:false
-      })
 
-      this.taskName = ""
+      // if(This.isEdit){
+      //   console.log('edit true');
+      //   //this.taskEdit()
+
+      //   //return
+      // }
+      // else{
+        this.todos.push({
+          
+          //id:this.todos[(this.todos.length)-1].id+1,
+          id:Math.floor((Math.random()*1000000+1)),
+          title:this.taskName,
+          time:new Date().toLocaleString("en-US",{hour12: true}),
+          done:false,
+          isEdit:false
+        })
+
+        this.taskName = ""
+      // }
     },
 
     changeDoneStatus(todo){
