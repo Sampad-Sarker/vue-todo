@@ -44,7 +44,7 @@
     <div class="todos">
       <!-- Todo start -->
 
-      <Todo v-for="todo in filteredTodos" :key="todo.id" :todo="todo" @onToggle="changeDoneStatus"></Todo>
+      <Todo v-for="todo in filteredTodos" :key="todo.id" :todo="todo" @onToggle="changeDoneStatus" @taskEdit="taskEditHandler"></Todo>
       <!-- <div
         class="todo"
         v-if="isTaskShow"
@@ -89,13 +89,13 @@ export default {
 
       filteredTasks: 'all',
       isEdit: false,
-      isNewTask: true,
+      
       
     }
   },
 
   mounted() {
-    //[this.todos] = [JSON.parse(localStorage.getItem("todos"))];
+    //this.todos = JSON.parse(localStorage.getItem("todos"));
     //console.log("mounted--",JSON.parse(localStorage.getItem("todos")));
 
   },
@@ -103,22 +103,20 @@ export default {
     //localStorage.setItem("todos",JSON.stringify(this.todos));
   },
 
-  watch: {
-    taskName(newValue, oldValue) {
-      if (this.isEdit) {
-        console.log("newValue", newValue, "oldValue", oldValue);
-
-        // this.todos.filter((el) => {
-        //   if (el.edit) { el.edit==false; return el.title = newValue ;}
-        // })
-
-        this.todos.filter(el => el.edit).title = newValue
-
-      }
-    }
-  },
+  
 
   methods: {
+    taskEditHandler(todo){
+
+      console.log("taskEditHandler.....",todo);
+      
+
+      todo.isEdit = true
+      this.isEdit = true
+      this.taskName = todo.title
+
+    },
+
     inputValueHandler(inputValueForm) {
       this.taskName = inputValueForm
     },
@@ -128,52 +126,17 @@ export default {
       else { return false }
     },
 
-    // edit(e) {
-    //   console.log('edit....', e.target.value);
-    //   let editedTaskName = e.target.value
-
-    //   if (this.isEdit) {
-    //     console.log("eeeeeeeeeeeeeeeeeeeeeeeeeee");
-
-    //     this.todos.filter((el) => {
-    //       if (el.edit) { el.title = editedTaskName }
-    //     })
-
-    //   }
-
-    // },
-
     taskEdit(todo, event) {
       this.isEdit = true;
-      this.isNewTask = false
-      todo.edit = true
+
+      todo.isEdit = true
       this.taskName = todo.title
-
-
-
-
-      // let editedTaskName = event.target.value
-
-      // todo.title = editedTaskName
-      // todo.edit = false
-
-
-      // console.log('taskEdit:==>',todo,)
 
     },
 
     clearDoneTask() {
-      console.log("clear clicked...........");
-      //let doneTask = this.todos.filter(el=>{return el.done})
-      //console.log(doneTask);
-
-
-      //console.log("clear clicked",this.doneTask);
-      // this.todos.filter(el => {return el.done}).splice(1,1)
-
-
-
-
+      //console.log("clear clicked...........");
+      
       for (let i = 0; i < this.todos.length; i++) {
 
         if (this.todos[i].done) {
@@ -181,7 +144,7 @@ export default {
           console.log(this.todos[i]);
 
           let indexOfDoneTask = this.todos.indexOf(this.todos[i])
-          this.todos.splice(indexOfDoneTask, 1)
+          this.todos.splice(indexOfDoneTask, 1)  //delete
 
 
         }
@@ -193,55 +156,59 @@ export default {
 
 
 
-    addTaskHandler(e) {
+    addTaskHandler() {
 
-      // if (e == '') {
-      //   alert("what's your Task Name?")
-      //   return
-      // }
-      const todoName = {
+      //show alert
+      if(this.taskName ==='' ){
+        alert("What's your task name?")
+        return   //
+      }
+
+      //new task add
+      if(!this.isEdit){
+        const todoName = {
 
         //id:this.todos[(this.todos.length)-1].id+1,
-        id: Math.floor((Math.random() * 1000000 + 1)),
+        id: Math.floor((Math.random() * 9999999999 + 1)),
         title: this.taskName,
         time: new Date().toLocaleString("en-US", { hour12: true }),
         done: false,
         isEdit: false
       }
 
-      this.todos.unshift(todoName)
+        this.todos.unshift(todoName)  //push at beginning
+        this.taskName = '' 
 
-      this.taskName = ''
-
-      // if (this.isEdit) {
-
-      //   this.isEdit = false
-      //   this.isNewTask = false
-      //   this.taskName = ''
-
-      //   console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.....");
+      }
 
 
-      // }
+      //edit task name
+      if(this.isEdit){
+        //console.log("addTask/editTask ===>")
 
-      // if (e.target.value == '') {
-      //   alert("what's your Task Name?")
+        let length = this.todos.length
 
-      // }
+        for (let i = 0; i < length; i++) {
 
-      // if (this.isNewTask && !this.isEdit) {
-      //   this.todos.push({
+          if (this.todos[i].isEdit) { 
 
-      //     //id:this.todos[(this.todos.length)-1].id+1,
-      //     id: Math.floor((Math.random() * 1000000 + 1)),
-      //     title: this.taskName,
-      //     time: new Date().toLocaleString("en-US", { hour12: true }),
-      //     done: false,
-      //     isEdit: false
-      //   })
-      // }
-      // this.taskName = ""
+            //console.log(this.todos[i]);
 
+            let indexOfTaskToBeEdited = this.todos.indexOf(this.todos[i])
+            this.todos[indexOfTaskToBeEdited].title = this.taskName  //new task name add
+            this.todos[indexOfTaskToBeEdited].isEdit = false
+
+          }
+
+
+        }
+
+        
+        this.isEdit = false
+        this.taskName=''
+      }
+      
+      
     },
 
     changeDoneStatus(todo) {
@@ -274,25 +241,7 @@ export default {
       return doneTask.length
     },
 
-    // clearDoneTask(){
-    //   console.log("clear clicked");
-
-    // }
-
-    // clearDoneTask(){
-    //   // let doneTask = this.todos.filter(el=>{return el.done})
-
-
-    //   console.log("clear");
-
-    //   // for (let i = 0; i < this.todos.length; i++) {
-    //   //   if(this.todos[i].done){
-    //   //     delete this.todos[i]
-    //   //   } 
-    //   // }
-
-    // }
-
+    
 
   }
 }
