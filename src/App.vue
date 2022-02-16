@@ -40,6 +40,7 @@
       </div>
     </div>
 
+
     <div class="todos">
       <!-- Todo start -->
 
@@ -81,16 +82,15 @@ export default {
     return {
       taskName: '',
       todos: [
-        { id: 1, title: 'Javascript Learning', time: new Date().toLocaleString("en-US", { hour12: true }), done: true, edit: false },
-        { id: 2, title: 'DOM Learning', time: new Date().toLocaleString("en-US", { hour12: true }), done: false, edit: false },
-        { id: 3, title: 'Vue.js Learning', time: new Date().toLocaleString("en-US", { hour12: true }), done: true, edit: false }
+        // { id: 1, title: 'Javascript Learning', time: new Date().toLocaleString("en-US", { hour12: true }), done: true, edit: false },
+        // { id: 2, title: 'DOM Learning', time: new Date().toLocaleString("en-US", { hour12: true }), done: false, edit: false },
+        // { id: 3, title: 'Vue.js Learning', time: new Date().toLocaleString("en-US", { hour12: true }), done: true, edit: false }
       ],
 
       filteredTasks: 'all',
       isEdit: false,
       isNewTask: true,
-      activated: "clear-button-activated",
-      deactivated: "clear-button-deactivated",
+      
     }
   },
 
