@@ -11,8 +11,8 @@
           <small class="todo__time text-xs">{{ todo.time }}</small>
         </div>
 
-        <div class="todo__edit" v-if="false">
-          <button @click.prevent="taskEdit(todo)">📝</button>
+        <div class="todo__edit">
+          <button @click.prevent="$emit('taskEdit',todo)">📝</button>
         </div>
       </div>
 </template>
@@ -21,7 +21,7 @@
 export default {
     name:'Todo',
     props:['todo'],
-    emits:['onToggle'],
+    emits:['onToggle','taskEdit'],
 
 }
 </script>
