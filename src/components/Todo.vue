@@ -7,11 +7,11 @@
       >
         <div class="todo__status-dot"></div>
         <div @click="$emit('onToggle',todo)" >
-          <p class="todo__content">{{ todo.title }}</p>
+          <p class="todo__content" style="text-transform: capitalize">{{ todo.title }}</p>
           <small class="todo__time text-xs">{{ todo.time }}</small>
         </div>
 
-        <div class="todo__edit">
+        <div class="todo__edit" v-if="false">
           <button @click.prevent="taskEdit(todo)">📝</button>
         </div>
       </div>
