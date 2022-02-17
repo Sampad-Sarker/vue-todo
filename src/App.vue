@@ -67,7 +67,12 @@
       <div v-if="!filteredTodos.length">
         <p>Task not available</p>
       </div>
+      <div >
+        <p class="app-footer">developed by <span><a href="https://twitter.com/SampadSarker" >SampadSarker</a></span>  with <span class="animate-pulse">❤️</span></p>
+      </div>
     </div>
+
+    
   </div>
 </template>
 
