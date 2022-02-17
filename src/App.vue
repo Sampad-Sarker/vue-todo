@@ -68,7 +68,7 @@
         <p>Task not available</p>
       </div>
       <div >
-        <p class="app-footer">developed by <span><a href="https://twitter.com/SampadSarker" >SampadSarker</a></span>  with <span class="animate-pulse">❤️</span></p>
+        <p class="app-footer">developed by <span><a href="https://github.com/Sampad-Sarker" >SampadSarker</a></span>  with <span class="animate-pulse">❤️</span></p>
       </div>
     </div>
 
